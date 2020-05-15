@@ -1,0 +1,12 @@
+{
+  "name": "noemt-heet-bot",
+  "version": "1.0.0",
+  "description": "Bot waarmee je kan bijhouden hoe vaak iemand een fout maakt tegen noemt/heet",
+  "main": "bot.js",
+  "author": "Yannic Fréson",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "dotenv": "^8.2.0",
+    "winston": "^3.2.1"
+  }
+}
