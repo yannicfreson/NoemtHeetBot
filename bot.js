@@ -1,60 +1,70 @@
-require('dotenv').config()
-var Discord = require('discord.io');
-var logger = require('winston');
-var auth = require('./auth.json');
+const Discord = require('discord.js');
+const auth = require('./auth.json');
 
-var mistakes = 0;
+const fs = require('fs');
 
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
-});
-logger.level = 'debug';
-var bot = new Discord.Client({
-   token: auth.token,
-   autorun: true
-});
-bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
-});
-bot.on('message', function (user, userID, channelID, message, evt) {
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
-       
-        args = args.splice(1);
-        switch(cmd) {
-            case 'fout':
-                mistakes++
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Fout toegevoegd.'
-                });
-                break;
+let mistakes = 0;
+try {
+    mistakes = JSON.parse(fs.readFileSync('./storage.json',"utf8")).mistakes;
+    console.log('Reeds ' + mistakes + ' fouten gemaakt');
+        
+} catch (error) {
+    console.log("mistakes.txt bestaat nog niet",error)
+}
 
-            case '-fout':
-                if (mistakes > 0) {
-                    mistakes--
-                    bot.sendMessage({
-                        to: channelID,
-                        message: 'Fout verwijderd.'
-                    });
-                } else {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: 'Aantal fouten is 0.'
-                    });
-                }
-                break;
-    
-            case 'aantal':
-                bot.sendMessage({
-                    to: channelID,
-                    message: mistakes + ' fouten.'
-                });
-                break;
-         }
+
+function setStatus () {
+    client.user.setActivity(mistakes.toString(), { type: 'LISTENING' });
+}
+
+const client = new Discord.Client();
+ 
+client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+    setStatus();
+//   client.user.setActivity("Game"); 
+});
+
+
+
+client.on('message', msg => {
+  if (msg.content === '!ping') {
+    msg.reply('!pong');
+  }
+
+  if (msg.content.substring(0, 1) === '!') {
+    let args = msg.content.substring(1).split(' ');
+    const cmd = args[0];
+   
+    args = args.splice(1);
+    switch(cmd) {
+        case 'fout':
+            mistakes++
+            msg.reply('Fout toegevoegd, huidig aantal fouten: ' + mistakes)
+            break;
+
+        case '-fout':
+            if (mistakes > 0) {
+                mistakes--
+                msg.reply('Fout verwijderd, huidig aantal fouten: ' + mistakes)
+            } else {
+                msg.reply('Huidig aantal fouten is 0.')
+            }
+            break;
+
+        case 'aantal':
+            msg.reply('Huidig aantal fouten: ' + mistakes)
+            break;
      }
+     fs.writeFileSync('storage.json', JSON.stringify({
+         mistakes
+     }))
+     setStatus();
+ }
 });
+ 
+client.login(auth.token);
+function setStatus() {
+    client.user.setActivity(mistakes.toString(), { type: 'LISTENING' });
+}
+
