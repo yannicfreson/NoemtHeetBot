@@ -21,7 +21,7 @@ function setStatus () {
 const client = new Discord.Client();
  
 client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`Logged in as ${client.user.tag}`);
     setStatus();
 });
 
@@ -51,7 +51,6 @@ client.on('message', msg => {
             break;
 
         case 'resetCounter':
-            
             if (msg.author.tag == 'Storm#1131') {
                 mistakes = 0
                 msg.channel.send('Counter reset. Huidig aantal fouten: ' + mistakes)
@@ -73,4 +72,3 @@ client.login(auth.token);
 function setStatus() {
     client.user.setActivity(', always. ' + mistakes.toString() + ' mistakes.', { type: 'WATCHING' });
 }
-
