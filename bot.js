@@ -4,6 +4,7 @@ const auth = require('./auth.json');
 const fs = require('fs');
 
 let mistakes = 0;
+
 try {
     mistakes = JSON.parse(fs.readFileSync('./storage.json',"utf8")).mistakes;
     console.log('Reeds ' + mistakes + ' fouten gemaakt');
@@ -22,14 +23,11 @@ const client = new Discord.Client();
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setStatus();
-//   client.user.setActivity("Game"); 
 });
-
-
 
 client.on('message', msg => {
   if (msg.content === '!ping') {
-    msg.reply('!pong');
+    msg.channel.send('!pong');
   }
 
   if (msg.content.substring(0, 1) === '!') {
@@ -40,20 +38,28 @@ client.on('message', msg => {
     switch(cmd) {
         case 'fout':
             mistakes++
-            msg.reply('Fout toegevoegd, huidig aantal fouten: ' + mistakes)
+            msg.channel.send('Fout toegevoegd, huidig aantal fouten: ' + mistakes)
             break;
 
         case '-fout':
             if (mistakes > 0) {
                 mistakes--
-                msg.reply('Fout verwijderd, huidig aantal fouten: ' + mistakes)
+                msg.channel.send('Fout verwijderd, huidig aantal fouten: ' + mistakes)
             } else {
-                msg.reply('Huidig aantal fouten is 0.')
+                msg.channel.send('Huidig aantal fouten is 0.')
+            }
+            break;
+
+        case 'resetCounter':
+            
+            if (msg.author.tag == 'Storm#1131') {
+                mistakes = 0
+                msg.channel.send('Counter reset. Huidig aantal fouten: ' + mistakes)
             }
             break;
 
         case 'aantal':
-            msg.reply('Huidig aantal fouten: ' + mistakes)
+            msg.channel.send('Huidig aantal fouten: ' + mistakes)
             break;
      }
      fs.writeFileSync('storage.json', JSON.stringify({
@@ -65,6 +71,6 @@ client.on('message', msg => {
  
 client.login(auth.token);
 function setStatus() {
-    client.user.setActivity(mistakes.toString(), { type: 'LISTENING' });
+    client.user.setActivity(', always. ' + mistakes.toString() + ' mistakes.', { type: 'WATCHING' });
 }
 
