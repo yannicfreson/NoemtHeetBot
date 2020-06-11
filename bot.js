@@ -10,10 +10,10 @@ var dispatcher = null;
 
 try {
     mistakes = JSON.parse(fs.readFileSync('./storage.json', "utf8")).mistakes;
-    console.log('Reeds ' + mistakes + ' fouten gemaakt');
+    console.log('Al ' + mistakes + ' fouten gemaakt');
 
 } catch (error) {
-    console.log("mistakes.txt bestaat nog niet", error)
+    console.log('mistakes.txt bestaat nog niet', error)
 }
 
 function setStatus() {
@@ -61,7 +61,7 @@ client.on('message', async msg => {
                 msg.channel.send('Fout toegevoegd. Aantal fouten: ' + mistakes)
                 break;
 
-            case 'anderfout':
+            case 'andersfout':
                 try {
                     connection = await msg.member.voice.channel.join();
                     currentChannel = msg.member.voice.channel;
@@ -81,7 +81,7 @@ client.on('message', async msg => {
                         console.log('Finished playing!\nLeft channel.');
                     });
                 } catch (error) {
-                    console.log('error playing the sound');
+                    console.log('Error playing the sound');
                 }
                 break;
 
@@ -94,7 +94,7 @@ client.on('message', async msg => {
                 }
                 break;
 
-            case 'resetCounter':
+            case 'resetcounter':
                 if (msg.author.tag == 'Storm#1131') {
                     mistakes = 0
                     msg.channel.send('Counter reset. Huidig aantal fouten: ' + mistakes)
