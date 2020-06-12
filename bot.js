@@ -16,10 +16,6 @@ try {
     console.log('mistakes.txt bestaat nog niet', error)
 }
 
-function setStatus() {
-    client.user.setActivity(mistakes.toString(), { type: 'LISTENING' });
-}
-
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -31,20 +27,21 @@ client.on('message', async msg => {
 
     if (msg.content.substring(0, 1) === '!') {
         let args = msg.content.substring(1).split(' ');
-        const cmd = toString(args[0]).toLowerCase();
+        let cmd = args[0].toString();
+        console.log(cmd);
 
         args = args.splice(1);
-        switch (cmd) {
+        switch (cmd.toLowerCase()) {
             case 'fout':
                 try {
                     connection = await msg.member.voice.channel.join();
                     currentChannel = msg.member.voice.channel;
                     console.log('Now playing!');
 
-                    if (whichOne == 0) {
+                    if (whichOne === 0) {
                         dispatcher = connection.play('./sounds/heet.mp3');
                         whichOne = 1;
-                    } else if (whichOne == 1) {
+                    } else if (whichOne === 1) {
                         dispatcher = connection.play('./sounds/heet1.mp3');
                         whichOne = 0
                     }
